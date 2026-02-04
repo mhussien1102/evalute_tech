@@ -17,4 +17,16 @@ class ProductViewModel extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+  void toggleFavorite(int productId) {
+    final index = products.indexWhere((e) => e.id == productId);
+    products[index].isFavorite = !products[index].isFavorite;
+    notifyListeners();
+  }
+
+  void addToCart(int productId) {
+    final index = products.indexWhere((e) => e.id == productId);
+    products[index].quantity++;
+    notifyListeners();
+  }
 }

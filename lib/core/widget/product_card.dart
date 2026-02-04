@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../data/models/product_model.dart';
+import '../../view_model/product_view_model.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductModel product;
@@ -11,7 +13,7 @@ class ProductCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Color(0xff839CAF)),
+        border: Border.all(color: const Color(0xff839CAF)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,14 +31,25 @@ class ProductCard extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-                const Positioned(
+                Positioned(
                   top: 8,
                   right: 8,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.favorite_border,
-                      color: Color(0xff042B78),
+                  child: GestureDetector(
+                    onTap: () {
+                      context.read<ProductViewModel>().toggleFavorite(
+                        product.id,
+                      );
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        product.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: product.isFavorite
+                            ? Color(0xff042B78)
+                            : const Color(0xff042B78),
+                      ),
                     ),
                   ),
                 ),
@@ -52,45 +65,32 @@ class ProductCard extends StatelessWidget {
                   product.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff77749A),
-                  ),
-                ),
-                Text(
-                  product.description,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff77749A),
-                  ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  "\$${product.price}",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text("\$${product.price}"),
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    Text(
-                      "Review (${product.rate})",
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xff9391AD),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    const Icon(Icons.star, size: 14, color: Color(0xffFFD800)),
+                    Text("Review (${product.rate})"),
                     const Spacer(),
-                    const CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Color(0xff004087),
-                      child: Icon(Icons.add, size: 18, color: Colors.white),
+                    GestureDetector(
+                      onTap: () {
+                        context.read<ProductViewModel>().addToCart(product.id);
+                      },
+                      child: Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          const CircleAvatar(
+                            radius: 16,
+                            backgroundColor: Color(0xff004087),
+                            child: Icon(
+                              Icons.add,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

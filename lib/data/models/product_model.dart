@@ -8,6 +8,7 @@ class ProductModel {
   final double rate;
   final int count;
   bool isFavorite;
+  int quantity;
 
   ProductModel({
     required this.id,
@@ -19,6 +20,7 @@ class ProductModel {
     required this.rate,
     required this.count,
     this.isFavorite = false,
+    this.quantity = 0,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -30,7 +32,7 @@ class ProductModel {
       category: json['category'],
       image: json['image'],
       rate: (json['rating']['rate'] as num).toDouble(),
-      count: json['rating']['count'],
+      count: json['rating']?['count'] ?? 0,
     );
   }
 }
